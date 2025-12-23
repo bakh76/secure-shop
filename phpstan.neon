@@ -1,0 +1,16 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+
+    level: 0
+
+    excludePaths:
+        - app/Http/Kernel.php
+
+    ignoreErrors:
+        - '#Relation .* is not found in .* model#'
+        - '#Access to an undefined property .*#'
+        - '#Parameter \#1 \$user of class Illuminate\\Auth\\Events\\Verified constructor#'
