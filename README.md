@@ -1,15 +1,33 @@
-# 🛡️ Secure E-Commerce System (Software Security Assignment)
+# 🛡️ Secure E-Commerce System (Assignment 2)
 
-This repository contains a secure Laravel-based e-commerce platform. This guide provides step-by-step instructions to set up the project locally using **Laragon** and **HeidiSQL**.
+This README provides a comprehensive, step-by-step guide to setting up the **Secure Shop** project on a local machine using Laragon. Please follow each step carefully to ensure the security features and database work correctly.
+
+---
 
 ## 📋 Prerequisites
 
-Before starting, ensure your local environment (Laragon) is running the following:
+Ensure you have the following installed. If you are using **Laragon (Full)**, most of these are already included:
 
-* **PHP 8.2+**
-* **MySQL** (via HeidiSQL)
-* **Composer**
-* **Node.js & NPM** (for frontend assets)
+* 
+**Laragon** (Full version recommended) 
+
+
+* 
+**PHP 8.2+** 
+
+
+* 
+**MySQL** (Accessible via HeidiSQL) 
+
+
+* 
+**Composer** (PHP dependency manager) 
+
+
+* 
+**Node.js & NPM** (Required for compiling UI styles) 
+
+
 
 ---
 
@@ -17,60 +35,107 @@ Before starting, ensure your local environment (Laragon) is running the followin
 
 ### Step 1: Project Setup
 
-1. Extract your project ZIP into your Laragon `www` directory: `C:\laragon\www\secure-shop`.
-2. Open the folder in **VS Code**.
+1. 
+**Download and Extract**: Download the project ZIP and extract it into your Laragon `www` directory (typically `C:\laragon\www\secure-shop`). 
 
-### Step 2: Install Dependencies
 
-Run the following commands in the VS Code terminal to install backend and frontend requirements:
+2. 
+**Open in VS Code**: Open the `secure-shop` folder in VS Code. 
 
+
+
+### Step 2: Install Backend Dependencies
+
+1. Open the terminal in VS Code (`Ctrl + ` `).
+2. Run the following command to install the Laravel framework and its libraries:
 ```bash
-# Install PHP packages
 composer install
 
-# Install and build UI assets (Tailwind CSS/Vite)
+```
+
+
+
+
+
+
+### Step 3: Install Frontend Dependencies
+
+This step compiles the Tailwind CSS and Javascript assets:
+
+1. Run the following commands:
+```bash
 npm install
 npm run build
 
 ```
 
-### Step 3: Environment Configuration (`.env`)
-
-1. Locate `.env.example` in the root folder and rename it to `.env`.
-2. Open the `.env` file and verify/update these settings:
-
-
-* 
-**Database**: Set `DB_DATABASE=secure_shop`.
-
-
-* 
-**Stripe**: Ensure `STRIPE_KEY` and `STRIPE_SECRET` are populated with your sandbox keys.
-
-
-* 
-**Mail**: Set `MAIL_MAILER=log` to test emails without a real mail server.
 
 
 
 
 
-### Step 4: Security & Database Initialization
+### Step 4: Configure the Environment (`.env`)
 
-Secure the application and build your database tables:
+1. Locate the `.env.example` file in the root directory.
+2. 
+**Copy and Rename**: Create a copy and name it `.env`. 
 
-1. **Generate App Key**:
+
+3. **Update Database Settings**: Open the `.env` file and ensure these lines match your Laragon setup:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=secure_shop
+DB_USERNAME=root
+DB_PASSWORD=
+
+```
+
+
+
+
+
+4. **Update Stripe Settings**: Enter your Sandbox keys to test payments:
+```env
+STRIPE_KEY=pk_test_your_key_here
+STRIPE_SECRET=sk_test_your_key_here
+
+```
+
+
+
+
+
+5. **Enable Local Email Logging**:
+```env
+MAIL_MAILER=log
+
+```
+
+
+
+
+
+
+### Step 5: Security & App Key
+
+Run this command to generate a unique encryption key for your application:
+
 ```bash
 php artisan key:generate
 
 ```
 
 
-2. 
-**Create Database**: Open HeidiSQL, right-click your connection, and create a new database named **`secure_shop`**.
+
+### Step 6: Setup the Database
+
+1. 
+**Create Database**: Open Laragon, click **Database** (HeidiSQL), right-click your connection, and create a new database named **`secure_shop`**. 
 
 
-3. **Run Migrations**:
+2. **Run Migrations**: Build the tables (users, products, orders, etc.) by running:
 ```bash
 php artisan migrate
 
@@ -78,54 +143,84 @@ php artisan migrate
 
 
 
+
+
+3. **Seed the Data (Crucial Step)**: To automatically add the default Admin, Test User, and Sample Products, run:
+```bash
+php artisan db:seed
+
+```
+
+
+*(Note: If you want to wipe everything and start fresh with data, use `php artisan migrate:fresh --seed`)*.
+
 ---
 
 ## 🏃‍♂️ How to Run
 
-1. In your terminal, start the local development server:
+1. **Start the Server**:
 ```bash
 php artisan serve
 
 ```
 
 
-2. Navigate to [http://127.0.0.1:8000](http://127.0.0.1:8000) in your web browser.
+2. 
+**Access the Site**: Open your browser and go to `http://127.0.0.1:8000`. 
+
+
 
 ---
 
-## 🧪 Testing Procedures
+## 🧪 Testing Features (For the Report)
 
-### 1. Role-Based Access Control (RBAC)
+### 1. Admin Access (RBAC)
 
-To create an Admin account manually:
+* **Default Credentials**: Log in using `admin@secureshop.com` and password `admin123` (provided by the Seeder).
+* 
+**Manual Admin Creation**: If you register a new user, go to HeidiSQL -> `users` table -> Data tab, and change the `role` column from `user` to `admin`. 
 
-* Register a standard user account on the website.
-* Open **HeidiSQL** and navigate to the `users` table.
-* Locate your user and change the `role` column value from `user` to **`admin`**.
-* Refresh the site to access the **Admin Dashboard**.
 
-### 2. Two-Factor Authentication (2FA)
 
-* Go to your **Profile** and click **Enable 2FA**.
-* Scan the generated QR code with **Google Authenticator**.
-* Verify the code to protect your login.
+### 2. Two-Factor Authentication (2FA) Protection
 
-### 3. Payment Processing (PCI-DSS Compliance)
+1. Go to your **Profile**. 
 
-Use Stripe’s official test card for sandbox transactions:
 
-* **Card Number**: `4242 4242 4242 4242`
-* **CVC**: `123` | **Expiry**: Any future date.
+2. Click **Enable 2FA** and scan the QR code with **Google Authenticator**. 
 
-### 4. Viewing Order Emails
 
-Since the mailer is set to `log`, view sent receipts here:
+3. Verify the code and re-login to test the extra security layer. 
 
-* Path: `storage/logs/laravel.log`
+
+
+### 3. Stripe Payment (PCI-DSS)
+
+1. Add products to your cart and proceed to checkout. 
+
+
+2. 
+**Use Test Card**: `4242 4242 4242 4242`, CVC: `123`, Expiry: Any future date. 
+
+
+
+### 4. Verification of Emails
+
+* Check `storage/logs/laravel.log` at the very bottom to see the HTML content of the order confirmation emails. 
+
+
 
 ---
 
 ## 🛠 Troubleshooting
 
-* **Vite manifest not found**: Run `npm run build`.
-* **Database errors**: Run `php artisan migrate:fresh` to reset the database (Warning: This erases existing data).
+* 
+**Vite manifest not found**: Ensure you ran `npm run build`. 
+
+
+* 
+**Table already exists**: Run `php artisan migrate:fresh --seed`. 
+
+
+* 
+**Stripe Error**: Restart your server (`Ctrl + C` then `php artisan serve`) after saving `.env` changes. 
